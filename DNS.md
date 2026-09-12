@@ -1,68 +1,61 @@
-# DNS cutover — Squarespace → GitHub Pages
+# DNS cutover — Kinsta (WordPress) → GitHub Pages
 
 Domain: `evidencebasedsolutions.ca`
-Target: GitHub Pages, repo `adamnormand/ncg-ebcs`
+DNS managed at: **Squarespace** (registrar / DNS panel)
+Currently hosted at: **Kinsta** (WordPress)
+Target: **GitHub Pages**, repo `adamnormand/ncg-ebcs`
+
+Note the split: the domain is registered and its DNS served at Squarespace, while the
+site itself runs at Kinsta. You change records at Squarespace; you decommission at
+Kinsta. There is no Squarespace-hosted site involved.
 
 Do not start until the static site is built, pushed to `main`, and verified at
-`https://adamnormand.github.io/ncg-ebcs/`. DNS is the last step, not the first.
+`https://adamnormand.github.io/ncg-ebcs/`. DNS is the last step.
 
 ---
 
 ## 0. Before you touch anything
 
-Record the current state so a rollback is mechanical, not archaeological:
-
 ```bash
 dig +noall +answer evidencebasedsolutions.ca A
 dig +noall +answer evidencebasedsolutions.ca AAAA
 dig +noall +answer www.evidencebasedsolutions.ca CNAME
+dig +noall +answer www.evidencebasedsolutions.ca A
 dig +noall +answer evidencebasedsolutions.ca MX
 dig +noall +answer evidencebasedsolutions.ca TXT
 ```
 
-Screenshot the Squarespace DNS panel as well. Then lower TTL to **600 s** on the
-records you are about to change (A, AAAA, `www`) and wait out the *old* TTL —
-typically 1–4 h — before the cutover. This is what turns a bad cutover into a
-10-minute problem instead of a 24-hour one.
+Save the output. Screenshot the Squarespace DNS panel too.
+
+Then lower TTL to **600 s** on the records you will change (`@` A/AAAA, `www`) and wait
+out the *old* TTL — often 3600 s or more — before cutting over. This is what makes a bad
+cutover a ten-minute problem instead of a day-long one.
 
 ---
 
-## 1. Disconnect the domain from the Squarespace site
+## 1. Remove the Kinsta records
 
-Squarespace re-asserts its own A/CNAME records while a domain is still attached to a
-site. Skipping this is the single most common reason a cutover silently reverts.
+**Squarespace → Settings → Domains →** `evidencebasedsolutions.ca` **→ DNS → DNS Settings.**
 
-**Settings → Domains →** `evidencebasedsolutions.ca` **→ Connected site → Disconnect.**
+You are looking for the records Kinsta told you to create when the site was set up:
 
-Keep the domain *registered* at Squarespace — you are only detaching it from the
-Squarespace-hosted site. Registration, renewal and email routing are unaffected.
-
----
-
-## 2. Remove the Squarespace hosting records
-
-**Settings → Domains →** `evidencebasedsolutions.ca` **→ DNS → DNS Settings.**
-
-Delete these, if present:
-
-| Type | Host | Value |
+| Type | Host | Current value |
 |---|---|---|
-| A | `@` | `198.185.159.144` |
-| A | `@` | `198.185.159.145` |
-| A | `@` | `198.49.23.144` |
-| A | `@` | `198.49.23.145` |
-| CNAME | `www` | `ext-cust.squarespace.com` |
-| CNAME | *(random string)* | `verify.squarespace.com` |
+| A | `@` | Kinsta's IPv4 for this site — a Google Cloud address, typically `34.x.x.x` or `35.x.x.x` |
+| A *or* CNAME | `www` | the same IP, or `<sitename>.kinsta.cloud` |
 
-**Leave everything else alone.** In particular do not touch:
+Confirm the exact current value against **MyKinsta → Sites → [site] → Info → IP address**
+before deleting, so the rollback value is the verified one rather than a guess.
 
-- `MX` records — email for the domain dies instantly if you remove these.
-- `TXT` — SPF (`v=spf1 …`), DMARC (`_dmarc`), and any DKIM selector records.
-- `CNAME` records for third-party services (mail, calendar, e-sign, analytics).
+**Leave everything else alone.** Specifically do not touch:
+
+- `MX` — email for the domain stops the moment these go.
+- `TXT` — SPF (`v=spf1 …`), `_dmarc`, and any DKIM selector records.
+- Any `CNAME` for third-party services (mail, calendar, e-sign, analytics, verification).
 
 ---
 
-## 3. Add the GitHub Pages records
+## 2. Add the GitHub Pages records
 
 | Type | Host | Value | TTL |
 |---|---|---|---|
@@ -76,71 +69,83 @@ Delete these, if present:
 | AAAA | `@` | `2606:50c0:8003::153` | 600 |
 | CNAME | `www` | `adamnormand.github.io.` | 600 |
 
-All four A records and all four AAAA records are required — they are GitHub's
-anycast set, not alternatives. The `www` CNAME points at the **user** subdomain
-(`adamnormand.github.io`), never at the repo path.
+All four A and all four AAAA records are required — they are an anycast set, not
+alternatives. The `www` CNAME points at the **user** subdomain, never at the repo path.
 
-If the Squarespace editor rejects a bare `@`, use the domain itself
-(`evidencebasedsolutions.ca`) or a blank host field — Squarespace's UI varies.
+If the Squarespace editor rejects a bare `@`, use the domain itself or leave the host
+field blank; its UI varies.
 
 ---
 
-## 4. Configure the GitHub side
+## 3. Configure the GitHub side
 
 1. Commit a `CNAME` file at the repo root containing exactly:
    ```
    evidencebasedsolutions.ca
    ```
-2. **Settings → Pages → Custom domain:** `evidencebasedsolutions.ca` → Save.
-   GitHub runs a DNS check; it will fail until propagation catches up. That is expected.
-3. Once the check passes, tick **Enforce HTTPS**. The Let's Encrypt certificate is
-   issued automatically, usually within minutes but allow up to 24 h.
-
-Do not tick *Enforce HTTPS* before the certificate exists — it will serve errors.
+2. **Settings → Pages → Source:** *Deploy from a branch* → `main` / `/ (root)`.
+3. **Settings → Pages → Custom domain:** `evidencebasedsolutions.ca` → Save.
+   The DNS check fails until propagation catches up. Expected.
+4. Once it passes, tick **Enforce HTTPS**. The certificate is issued automatically —
+   usually minutes, occasionally up to 24 h. Do not tick it before the certificate
+   exists or the site serves errors.
 
 ---
 
-## 5. Verify
+## 4. Verify
 
 ```bash
-dig +noall +answer evidencebasedsolutions.ca A          # expect the four 185.199.x.153
-dig +noall +answer www.evidencebasedsolutions.ca CNAME  # expect adamnormand.github.io.
+dig +noall +answer evidencebasedsolutions.ca A          # the four 185.199.x.153
+dig +noall +answer www.evidencebasedsolutions.ca CNAME  # adamnormand.github.io.
 dig +noall +answer evidencebasedsolutions.ca MX         # unchanged from step 0
 
-curl -sSI https://evidencebasedsolutions.ca | head -1       # expect 200
-curl -sSI http://evidencebasedsolutions.ca | head -1        # expect 301 to https
-curl -sSI https://www.evidencebasedsolutions.ca | head -1   # expect 301 to apex
+curl -sSI https://evidencebasedsolutions.ca | head -1       # 200
+curl -sSI http://evidencebasedsolutions.ca | head -1        # 301 -> https
+curl -sSI https://www.evidencebasedsolutions.ca | head -1   # 301 -> apex
 ```
 
-Then confirm by hand: apex loads, `www` redirects, the padlock is valid, and **send a
-test email to an address on the domain and confirm receipt.** Email is the thing that
-breaks quietly.
+By hand: apex loads, `www` redirects, padlock valid, and **send a test email to an
+address on the domain and confirm receipt.** A broken site is obvious within minutes;
+broken mail is not.
+
+Spot-check the old URLs as well — every path indexed by Google should still resolve.
+See *URL parity* below.
 
 ---
 
-## 6. After 48 hours of clean operation
+## 5. Decommission Kinsta — only after 48 h clean
 
-- Raise TTLs back to 3600 s.
-- Cancel the Squarespace *site* subscription if it is separate from the domain
-  registration. Keep the registration until you are ready to transfer it.
+1. Raise TTLs back to 3600 s.
+2. **Take a final full backup from MyKinsta and download it** before anything else.
+   Once the site is deleted, the WordPress database and uploads are gone.
+3. Remove the domain from the Kinsta site, then delete the site / close the plan.
+
+Do not cancel Kinsta on cutover day. It costs one month's hosting to keep a working
+rollback target, which is cheap.
 
 ---
 
 ## Rollback
 
-Re-add the records captured in step 0 and reconnect the domain to the Squarespace site
-(step 1, in reverse). With TTL at 600 s the site is back within ~10 minutes. This is
-why step 0 is not optional.
+Re-add the Kinsta A record captured in step 0 and remove the GitHub records. With TTL
+at 600 s you are back inside ~10 minutes. Kinsta keeps serving the WordPress site
+throughout — nothing there changes until step 5 — so rollback is purely a DNS action.
 
 ---
 
-## Two things worth deciding before you start
+## Two things this migration breaks that DNS will not tell you about
 
-**Registrar.** Leaving `.ca` registration at Squarespace after the site moves means
-paying Squarespace for a service you have reduced to a DNS panel. Transferring to a
-registrar you already use consolidates it. Do this *after* the cutover is stable —
-never during.
+**The contact form.** The `/contact/` page almost certainly runs a WordPress form plugin
+(Contact Form 7, WPForms, Gravity Forms). Those are PHP. GitHub Pages serves static
+files only — there is no server to receive a POST. The form will render and silently
+fail unless it is repointed at a hosted form endpoint first. Given the rest of your
+stack, Zoho Forms is the obvious candidate; Formspree is the lighter option. **Decide
+this before cutover, not after** — a contact form that looks fine and quietly drops
+enquiries is the worst failure mode available here.
 
-**Apex vs. www.** The table above serves both, with `www` redirecting to the apex.
-If the old site canonicalised to `www`, keep both live regardless so existing inbound
-links and any print collateral continue to resolve.
+**URL parity.** WordPress permalinks end in a trailing slash (`/about/`). GitHub Pages
+serves `about/index.html` at `/about/`, so parity holds *if* the files are laid out that
+way — which is why the structure in `README.md` uses `about/index.html` rather than
+`about.html`. Before cutover, pull the full URL list from `sitemap_index.xml` (the
+extraction script saves it) and confirm every one has a counterpart. Anything dropped
+needs a redirect or it becomes a 404 with existing inbound links pointing at it.
