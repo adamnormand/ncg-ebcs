@@ -13,7 +13,8 @@ No build step, no JavaScript, no dependencies.
 | Contact form replaced with `mailto:` | Done |
 | 404, robots.txt, sitemap.xml | Done |
 | DNS cutover runbook | Done — [`DNS.md`](DNS.md) |
-| Team profile pages (5) and `/news/` | Not migrated — see below |
+| Team profile pages (5) | **Done** — clean URLs, old paths redirect |
+| `/news/` | Not migrated — nothing links to it |
 | GitHub Pages enabled | Not started |
 | DNS switched | Not started (must be last) |
 
@@ -59,19 +60,33 @@ untouched defaults the theme never used, and are not carried over.
 
 ## Still to migrate
 
-**Five team profile pages**, linked from the About page's *View Profile* buttons:
-`/about/elementor-367/`, `/about/about-us/`, `/about/about-us-2/`, `/about/about-us-3/`,
-`/about/about-us-4/`. Those buttons currently 404. Capture them the same way the main
-pages were captured (browser *Save Page As → Webpage, Complete*).
-
 **`/news/`** appears in the WordPress sitemap but nothing on the site links to it.
-Confirm whether it should survive the migration at all.
+Confirm whether it should survive the migration at all. Nothing else is outstanding.
+
+### Consultant profile URLs
+
+WordPress served these on opaque paths. They now live on readable slugs, with the old
+paths kept as redirect stubs so any existing inbound link or bookmark still resolves:
+
+| Consultant | New URL | Redirects from |
+|---|---|---|
+| Dr. E. Kevin Kelloway | `/about/kevin-kelloway/` | `/about/elementor-367/` |
+| Dr. Jennifer K. Dimoff | `/about/jennifer-dimoff/` | `/about/about-us/` |
+| Dr. Stephanie Gilbert | `/about/stephanie-gilbert/` | `/about/about-us-2/` |
+| Dr. Jane Mullen | `/about/jane-mullen/` | `/about/about-us-3/` |
+| Dr. Mike Teed | `/about/mike-teed/` | `/about/about-us-4/` |
+
+Each stub is a `meta refresh` with a `rel="canonical"` pointing at the new URL — the
+static-hosting equivalent of a 301. Delete them once the old URLs stop being requested.
 
 ## Known defects on the live site, carried or corrected
 
 | Issue | Where | Handling |
 |---|---|---|
-| Two team members link to the same profile (`about-us-3`), leaving `about-us-4` orphaned | About | **Reproduced as-is.** One of Dr. Mullen / Dr. Teed points at the wrong profile. Needs a human decision. |
+| Two team members linked to the same profile (`about-us-3`), leaving `about-us-4` orphaned | About | **Fixed.** The profile pages' own canonical URLs settled it: `about-us-3` is Dr. Mullen, `about-us-4` is Dr. Teed. Dr. Teed's button was the broken one. |
+| All five profile pages titled `About Us` | Profiles | **Corrected** to the consultant's name. |
+| Profile page says "Jane Mullen is an Professor" | Dr. Mullen | **Corrected** to "a Professor". |
+| Profile page says "part of select team" | Dr. Teed | **Corrected** to "part of a select team". |
 | `MENTAL HEARTH TRAINING FOR LEADERS` | Services | **Corrected** to *Health*. |
 | "Learn more about each of the consulting team with specific the specific profiles provided." | About | **Corrected** — the duplicated words removed. |
 | `Suject` | Contact form | Moot; the form is gone. |

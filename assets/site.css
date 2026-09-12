@@ -133,3 +133,19 @@ img{max-width:100%;height:auto;display:block}
   .site-footer .wrap{grid-template-columns:1fr}
   .prose .wrap,.band-pale .wrap{padding-block:40px}
 }
+
+/* ---- consultant profile ---- */
+.profile .wrap{display:grid;grid-template-columns:350px 1fr;gap:48px;padding-block:64px;align-items:start}
+.profile-photo{margin:0}
+.profile-photo img{width:100%;max-width:350px;border-radius:2px}
+.profile-bio p{font-size:16px}
+.eyebrow{font-family:var(--font-title);font-weight:600;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--green);margin:0 0 1.2em}
+.profile-contact{margin:1.6em 0 0}
+.back{margin:2em 0 0;font-size:14px}
+.back a{color:var(--navy);text-decoration:none;font-weight:700}
+.back a:hover,.back a:focus-visible{text-decoration:underline}
+
+@media (max-width:800px){
+  .profile .wrap{grid-template-columns:1fr;gap:28px;padding-block:44px}
+  .profile-photo img{max-width:260px}
+}
