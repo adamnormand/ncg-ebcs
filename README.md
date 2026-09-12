@@ -23,29 +23,32 @@ as `evidencebasedsolutions.ca` is. So the live site cannot be crawled from here,
 nothing was reconstructed from memory or search results. A rebuild that invents a real
 firm's copy, layout and imagery is worse than no rebuild.
 
-Run this on any machine with normal internet, then commit the result:
+### Option A — Simply Static plugin (recommended, no terminal)
+
+Everything happens inside wp-admin. On a multisite install, run it from the
+**subsite's** own admin, not the network admin.
+
+1. **Plugins → Add New →** search `Simply Static` (Patrick Posner) → Install → Activate.
+2. **Simply Static → Settings → Deployment →** Delivery method: **ZIP archive**.
+   URLs: **Relative** — keeps the export portable and easy to diff.
+3. **Simply Static → Generate → Generate Static Files.** A three-page site takes a minute.
+4. Download the ZIP, drop it in this repo, commit, push.
+
+This produces exactly what the rebuild needs: rendered HTML, the full CSS cascade,
+fonts, images, and every upload actually referenced by a page. It is the same thing
+`tools/extract.sh` builds, produced server-side and more completely.
+
+If the ZIP exceeds ~50 MB, the media library is carrying unused uploads — commit
+`mirror/` unzipped instead, or prune first.
+
+### Option B — extraction script
+
+Run on any machine with normal internet. Needs only curl.
 
 ```bash
 bash tools/extract.sh
 git add ebcs-extract.tar.gz && git commit -m "Add site extraction" && git push
 ```
-
-It takes a couple of minutes and produces `ebcs-extract/`:
-
-| Output | Contents |
-|---|---|
-| `mirror/` | Rendered HTML, CSS, JS, fonts, images — as actually served. This is what preserves the **style**. |
-| `api-pages.json`, `api-posts.json` | Clean per-page title, slug and rendered HTML, without theme chrome. |
-| `api-media.json`, `media/` | Every file in the WordPress media library, originals included. |
-| `sitemap_index.xml` | The full URL list, for confirming parity after cutover. |
-
-The mirror and the REST API are deliberately both captured: the API gives clean content
-but no styling, the mirror gives real styling but tangled markup. The rebuild uses the
-API for text and the mirror for the design system — colours, type scale, spacing, assets.
-
-**Alternatives if the script is inconvenient:** a full backup from MyKinsta (Sites →
-Backups → Download), or wp-admin → Tools → Export. Either works; neither captures
-rendered CSS, so pair it with a browser *Save Page As → Complete* on each page.
 
 ## Decisions
 
