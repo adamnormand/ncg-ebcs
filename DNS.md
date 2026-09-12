@@ -133,19 +133,17 @@ throughout — nothing there changes until step 5 — so rollback is purely a DN
 
 ---
 
-## Two things this migration breaks that DNS will not tell you about
-
-**The contact form.** The `/contact/` page almost certainly runs a WordPress form plugin
-(Contact Form 7, WPForms, Gravity Forms). Those are PHP. GitHub Pages serves static
-files only — there is no server to receive a POST. The form will render and silently
-fail unless it is repointed at a hosted form endpoint first. Given the rest of your
-stack, Zoho Forms is the obvious candidate; Formspree is the lighter option. **Decide
-this before cutover, not after** — a contact form that looks fine and quietly drops
-enquiries is the worst failure mode available here.
+## One thing this migration breaks that DNS will not tell you about
 
 **URL parity.** WordPress permalinks end in a trailing slash (`/about/`). GitHub Pages
 serves `about/index.html` at `/about/`, so parity holds *if* the files are laid out that
 way — which is why the structure in `README.md` uses `about/index.html` rather than
 `about.html`. Before cutover, pull the full URL list from `sitemap_index.xml` (the
 extraction script saves it) and confirm every one has a counterpart. Anything dropped
-needs a redirect or it becomes a 404 with existing inbound links pointing at it.
+becomes a 404 with live inbound links pointing at it.
+
+**No longer a concern: the contact form.** The WordPress form plugin would have had no
+server to POST to on static hosting, and would have silently dropped enquiries. The
+contact page is instead being rebuilt as plain published contact details with `mailto:`
+and `tel:` links, so there is no form endpoint, no third-party form service, and no
+server-side dependency anywhere in the stack. See `README.md` → *Decisions*.

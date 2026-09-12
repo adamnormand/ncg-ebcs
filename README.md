@@ -12,7 +12,7 @@ migrating off Kinsta-hosted WordPress to GitHub Pages. No build step, no depende
 | Extraction tooling | Done — [`tools/extract.sh`](tools/extract.sh) |
 | Source content + media extracted | **Blocked — needs one command run on your machine** |
 | Static pages built | Not started (depends on extraction) |
-| Contact form replacement chosen | Not started — see `DNS.md` |
+| Contact form | Decided — replaced by `mailto:` / `tel:` details, no form |
 | DNS switched | Not started (must be last) |
 
 ## The one thing needed to proceed
@@ -46,6 +46,37 @@ API for text and the mirror for the design system — colours, type scale, spaci
 **Alternatives if the script is inconvenient:** a full backup from MyKinsta (Sites →
 Backups → Download), or wp-admin → Tools → Export. Either works; neither captures
 rendered CSS, so pair it with a browser *Save Page As → Complete* on each page.
+
+## Decisions
+
+**The contact form is dropped, not replaced.** The WordPress form plugin cannot work on
+static hosting — there is no server to receive the POST. Rather than swapping it for a
+hosted form service, the contact page publishes the details directly and lets people mail
+from their own client:
+
+```html
+<a href="mailto:ADDRESS@evidencebasedsolutions.ca?subject=Website%20enquiry">ADDRESS@evidencebasedsolutions.ca</a>
+<a href="tel:+1NPANXXXXXX">(NPA) NXX-XXXX</a>
+```
+
+Three rules this follows, all of which matter more than they look:
+
+1. **The visible text is the address itself**, never "Email us". A `mailto:` link opens
+   nothing for someone on webmail with no mail client configured — which is most people
+   on a work desktop. If the address is only in the `href`, they hit a dead link. Shown
+   as text, they copy it and carry on.
+2. **`tel:` carries E.164 in the `href`** (`+14185551234`) and human formatting in the
+   text. Dialers need the former; readers need the latter.
+3. **A `?subject=` prefill** on the mail link, so enquiries from the site are
+   identifiable at a glance in the inbox — cheap triage, no tracking.
+
+Left plain rather than obfuscated. JavaScript address-scrambling breaks copy-paste and
+screen readers to defeat scrapers that stopped being the binding constraint once server
+-side spam filtering got good. Not worth the accessibility cost on a three-page site.
+
+Exact addresses and numbers come from the extraction — `contact-details.txt` — and are
+transcribed verbatim. A retyped address is a silently dead contact channel, the same
+failure mode the form had.
 
 ## Intended structure
 
