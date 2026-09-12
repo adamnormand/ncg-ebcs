@@ -10,45 +10,34 @@ migrating off Kinsta-hosted WordPress to GitHub Pages. No build step, no depende
 | Destination repo created | Done |
 | DNS cutover runbook | Done — [`DNS.md`](DNS.md) |
 | Extraction tooling | Done — [`tools/extract.sh`](tools/extract.sh) |
-| Source content + media extracted | **Blocked — needs one command run on your machine** |
-| Static pages built | Not started (depends on extraction) |
+| Source content + media extracted | Homepage only — export was incomplete |
+| Static pages built | Home done. Services / About / Clients / Contact **blocked** |
 | Contact form | Decided — replaced by `mailto:` / `tel:` details, no form |
 | DNS switched | Not started (must be last) |
 
-## The one thing needed to proceed
+## The export was incomplete — 1 page of 11
 
-This session has no general outbound web access. The egress policy is deny-by-default:
-GitHub and search are reachable, ordinary HTTP is not — `example.com` is refused exactly
-as `evidencebasedsolutions.ca` is. So the live site cannot be crawled from here, and
-nothing was reconstructed from memory or search results. A rebuild that invents a real
-firm's copy, layout and imagery is worse than no rebuild.
+The Simply Static ZIP contained only `index.html`, but `page-sitemap.xml` in that
+same export lists eleven URLs:
 
-### Option A — Simply Static plugin (recommended, no terminal)
-
-Everything happens inside wp-admin. On a multisite install, run it from the
-**subsite's** own admin, not the network admin.
-
-1. **Plugins → Add New →** search `Simply Static` (Patrick Posner) → Install → Activate.
-2. **Simply Static → Settings → Deployment →** Delivery method: **ZIP archive**.
-   URLs: **Relative** — keeps the export portable and easy to diff.
-3. **Simply Static → Generate → Generate Static Files.** A three-page site takes a minute.
-4. Download the ZIP, drop it in this repo, commit, push.
-
-This produces exactly what the rebuild needs: rendered HTML, the full CSS cascade,
-fonts, images, and every upload actually referenced by a page. It is the same thing
-`tools/extract.sh` builds, produced server-side and more completely.
-
-If the ZIP exceeds ~50 MB, the media library is carrying unused uploads — commit
-`mirror/` unzipped instead, or prune first.
-
-### Option B — extraction script
-
-Run on any machine with normal internet. Needs only curl.
-
-```bash
-bash tools/extract.sh
-git add ebcs-extract.tar.gz && git commit -m "Add site extraction" && git push
 ```
+/                       /services/          /clients/           /contact/
+/about/                 /news/              /about/about-us/    /about/about-us-2/
+/about/about-us-3/      /about/about-us-4/  /about/elementor-367/
+```
+
+The homepage is rebuilt and faithful. The four other pages in the primary nav —
+Services, About, Clients, Contact — have no source HTML, so they are not built and
+their nav links currently 404.
+
+**To finish:** re-run Simply Static and let the job reach *Done* before downloading.
+Check **Simply Static → Activity Log** shows all eleven URLs crawled, not one. If it
+still stops at the homepage, add the four page URLs under
+**Settings → Include/Exclude → Additional URLs** and re-run.
+
+Of the eleven, five matter: `/`, `/services/`, `/about/`, `/clients/`, `/contact/`.
+The `about-us-N` and `elementor-367` entries are Elementor draft/revision artifacts —
+confirm before publishing, but they are almost certainly not linked from anywhere.
 
 ## Decisions
 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home - Evidence Based Consulting Solutions</title>
+<meta name="description" content="Evidence Based Organizational Solutions Ltd. is a boutique consulting firm providing occupational health and safety products and services to organizations seeking innovative, evidence-based solutions to real workplace challenges.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600&display=swap">
+<style>
+:root{
+  --navy:#081C31;   /* primary action, icon */
+  --green:#317D52;  /* contact actions */
+  --band:#D1D1D1;   /* pale section, footer headings */
+  --dark:#252525;   /* footer */
+  --text:#777777;
+  --title:#242424;
+  --font-text:"Lato",Arial,Helvetica,sans-serif;
+  --font-title:"Poppins",Arial,Helvetica,sans-serif;
+  --wrap:1200px;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-text);font-size:16px;line-height:1.7;color:var(--text);background:#fff;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-title);color:var(--title);font-weight:600;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(30px,4vw,40px)}
+h4{font-size:20px}
+p{margin:0 0 1.2em}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+
+/* ---- skip link ---- */
+.skip{position:absolute;left:-9999px;top:0;background:var(--navy);color:#fff;padding:.7em 1.2em;z-index:100}
+.skip:focus{left:0}
+
+/* ---- header ---- */
+.site-header{border-bottom:1px solid #ececec;background:#fff}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:90px;flex-wrap:wrap}
+.logo img{width:250px}
+.nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.nav a{font-family:var(--font-text);font-weight:700;font-size:13px;letter-spacing:.4px;text-transform:uppercase;color:var(--title);text-decoration:none;padding:6px 0;border-bottom:2px solid transparent}
+.nav a:hover,.nav a:focus-visible,.nav a[aria-current="page"]{border-bottom-color:var(--navy)}
+
+/* ---- page-title banner ---- */
+.banner{background:var(--navy) url("assets/banner.png") center/cover no-repeat;color:#fff;text-align:center}
+.banner .wrap{padding-block:44px}
+.banner h2{color:#fff;font-size:24px;margin:0;font-weight:500}
+
+/* ---- intro ---- */
+.intro .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding-block:64px}
+.intro ul{margin:0 0 1.2em;padding-left:1.3em}
+.intro li{margin-bottom:.4em}
+.intro figure{margin:0}
+.intro img{width:100%;border-radius:2px}
+
+/* ---- pale call-to-action band ---- */
+.cta{background:var(--band)}
+.cta .wrap{padding-block:56px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+.cta-inner{display:flex;gap:15px;align-items:flex-start}
+.cta-icon{flex:0 0 auto;width:32px;height:32px;fill:var(--navy)}
+.cta p{font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:400;color:#000;margin:0}
+.btn{display:inline-block;font-family:var(--font-text);font-weight:700;font-size:13px;letter-spacing:.6px;text-transform:uppercase;color:#fff;text-decoration:none;padding:15px 32px;border-radius:3px;background:var(--navy);white-space:nowrap;transition:opacity .15s}
+.btn:hover,.btn:focus-visible{opacity:.85}
+.btn-green{background:var(--green)}
+
+/* ---- footer ---- */
+.site-footer{background:var(--dark);color:#b6b6b6}
+.site-footer .wrap{padding-block:56px;display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:36px;align-items:stretch}
+.contact-col{display:flex;flex-direction:column}
+.contact-col .btn{margin-top:auto;align-self:flex-start}
+.site-footer h4{color:var(--band);font-size:18px;margin-bottom:.8em}
+.site-footer p{font-size:15px}
+.region{font-family:var(--font-title);font-weight:500;color:var(--band);font-size:13px;letter-spacing:.5px;margin:0 0 2px}
+.person{color:#fff;font-size:16px;margin:0 0 6px}
+.addr{display:block;font-size:13px;overflow-wrap:break-word;color:#9fb3a7;text-decoration:none;margin:0 0 14px;line-height:1.5}
+.addr:hover,.addr:focus-visible{color:#fff;text-decoration:underline}
+.colophon{background:#1b1b1b;color:#8d8d8d;font-size:13px}
+.colophon .wrap{padding-block:20px;text-align:center}
+
+@media (max-width:900px){
+  .intro .wrap{grid-template-columns:1fr;gap:32px;padding-block:44px}
+  .cta .wrap{grid-template-columns:1fr;gap:28px}
+  .site-footer .wrap{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media (max-width:600px){
+  .site-header .wrap{justify-content:center;min-height:0;padding-block:18px}
+  .nav ul{justify-content:center;gap:18px}
+  .logo img{width:210px}
+  .cta p{font-size:19px}
+  .site-footer .wrap{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Evidence Based Consulting Solutions — home">
+      <img src="assets/logo.png" width="500" height="42" alt="Evidence Based Consulting Solutions">
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <ul>
+        <li><a href="/" aria-current="page">Home</a></li>
+        <li><a href="/services/">Services</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/clients/">Clients</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="banner"><div class="wrap"><h2>Home</h2></div></div>
+
+<main id="main">
+  <section class="intro">
+    <div class="wrap">
+      <div>
+        <h1>Evidence in Action</h1>
+        <p>We embrace the role of &ldquo;scientist-practitioner&rdquo; and use a combination of science and practice to enhance the well-being and performance of our clients and their employees. As scientists, our goal is to conduct research that is relevant, useful, and meaningful to our clients.</p>
+        <p>As practitioners, our goal is even simpler: to put this research into practice&mdash;to develop and deliver evidence-based programs and services that are founded in research, but tested in real workplaces. In short, we provide scientifically-evaluated programs and services that can be customized to:</p>
+        <ul>
+          <li>maintain their scientific integrity, and</li>
+          <li>meet the unique needs and resources of the organization.</li>
+        </ul>
+      </div>
+      <figure>
+        <img src="assets/hero.jpg" srcset="assets/hero.jpg 1024w, assets/hero@2x.jpg 1536w"
+             sizes="(max-width:900px) 100vw, 550px" width="1024" height="768"
+             alt="Workplace training session in progress">
+      </figure>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div class="cta-inner">
+        <svg class="cta-icon" viewBox="0 0 384 512" aria-hidden="true" focusable="false">
+          <path d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"/>
+        </svg>
+        <p>We know that choosing the right solution for your workplace is important. We work with you to understand your needs, goals and constraints and to identify practical and effective solutions.</p>
+      </div>
+      <a class="btn" href="/contact/">Book an Appointment</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <h4>About us</h4>
+      <p>Evidence Based Organizational Solutions Ltd. is a boutique consulting firm that provides occupational health and safety products and services to organizations seeking innovative, evidence-based solutions to real workplace challenges.</p>
+    </div>
+
+    <div class="contact-col">
+      <h4>Contact us</h4>
+      <p class="region">&#10148; CANADA &ndash; ENGLISH</p>
+      <p class="person">Dr. Kevin Kelloway</p>
+      <a class="addr" href="mailto:kevin.kelloway@evidencebasedsolutions.ca">kevin.kelloway@<wbr>evidencebasedsolutions.ca</a>
+      <a class="btn btn-green" href="mailto:kevin.kelloway@evidencebasedsolutions.ca?subject=Website%20enquiry">E-mail Kevin</a>
+    </div>
+
+    <div class="contact-col">
+      <p class="region">&#10148; CANADA &ndash; FRENCH</p>
+      <p class="person">Dr. Mike Teed</p>
+      <a class="addr" href="mailto:mike.teed@evidencebasedsolutions.ca">mike.teed@<wbr>evidencebasedsolutions.ca</a>
+      <a class="btn btn-green" href="mailto:mike.teed@evidencebasedsolutions.ca?subject=Website%20enquiry">E-mail Mike</a>
+    </div>
+
+    <div class="contact-col">
+      <p class="region">&#10148; UNITED STATES</p>
+      <p class="person">Dr. Jennifer K. Dimoff</p>
+      <a class="addr" href="mailto:jennifer.dimoff@evidencebasedsolutions.ca">jennifer.dimoff@<wbr>evidencebasedsolutions.ca</a>
+      <a class="btn btn-green" href="mailto:jennifer.dimoff@evidencebasedsolutions.ca?subject=Website%20enquiry">E-mail Jennifer</a>
+    </div>
+  </div>
+  <div class="colophon"><div class="wrap">&copy; 2024 Evidence Based Organizational Solutions Ltd.</div></div>
+</footer>
+</body>
+</html>
