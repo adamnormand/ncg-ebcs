@@ -1,0 +1,135 @@
+/* Evidence Based Consulting Solutions — shared styles.
+   Design tokens taken from the live WordPress site. */
+
+:root{
+  --navy:#081C31;   /* primary action, icon */
+  --green:#317D52;  /* contact actions */
+  --band:#D1D1D1;   /* pale section, footer headings */
+  --dark:#252525;   /* footer */
+  --text:#777777;
+  --title:#242424;
+  --font-text:"Lato",Arial,Helvetica,sans-serif;
+  --font-title:"Poppins",Arial,Helvetica,sans-serif;
+  --wrap:1200px;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-text);font-size:16px;line-height:1.7;color:var(--text);background:#fff;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-title);color:var(--title);font-weight:600;line-height:1.25;margin:0 0 .6em}
+h1{font-size:clamp(30px,4vw,40px)}
+h2{font-size:clamp(21px,2.4vw,26px)}
+h3{font-size:19px}
+p{margin:0 0 1.2em}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+
+.skip{position:absolute;left:-9999px;top:0;background:var(--navy);color:#fff;padding:.7em 1.2em;z-index:100}
+.skip:focus{left:0}
+
+/* ---- header ---- */
+.site-header{border-bottom:1px solid #ececec;background:#fff}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:90px;flex-wrap:wrap}
+.logo img{width:250px}
+.nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.nav a{font-weight:700;font-size:13px;letter-spacing:.4px;text-transform:uppercase;color:var(--title);text-decoration:none;padding:6px 0;border-bottom:2px solid transparent}
+.nav a:hover,.nav a:focus-visible,.nav a[aria-current="page"]{border-bottom-color:var(--navy)}
+
+/* ---- page-title banner ---- */
+.banner{background:var(--navy) url("banner.png") center/cover no-repeat;color:#fff;text-align:center}
+.banner-alt{background-image:url("banner-alt.png")}
+.banner-plain{background-image:none}
+.banner .wrap{padding-block:44px}
+.banner-title{color:#fff;font-family:var(--font-title);font-size:clamp(22px,3vw,28px);font-weight:500;margin:0;line-height:1.2}
+
+/* ---- generic prose ---- */
+.prose .wrap{padding-block:56px;max-width:900px}
+.prose.narrow .wrap{max-width:760px}
+.prose h2{margin-top:1.6em}
+.prose h2:first-child{margin-top:0}
+.prose ul{padding-left:1.3em}
+.prose li{margin-bottom:.5em}
+.lede{font-size:19px;color:var(--title)}
+
+/* ---- two-column intro ---- */
+.intro .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding-block:64px}
+.intro ul{margin:0 0 1.2em;padding-left:1.3em}
+.intro li{margin-bottom:.4em}
+.intro figure{margin:0}
+.intro img{width:100%;border-radius:2px}
+
+/* ---- pale band ---- */
+.band-pale{background:var(--band)}
+.band-pale .wrap{padding-block:56px}
+.section-title{text-align:center;margin-bottom:1.4em}
+
+/* ---- services ---- */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+.service{background:#fff;padding:30px 28px;border-radius:3px;border-top:3px solid var(--navy)}
+.service h2{font-size:18px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:.7em}
+.service p{margin:0;font-size:15px}
+
+/* ---- team ---- */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px}
+.member{background:#fff;padding:24px;text-align:center;border-radius:3px;display:flex;flex-direction:column;align-items:center}
+.member img{width:140px;height:140px;object-fit:cover;margin-bottom:16px}
+.member h3{font-size:16px;margin-bottom:1em}
+.member .btn{margin-top:auto}
+
+/* ---- testimonials ---- */
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+.quote{margin:0;background:#fff;padding:30px 28px;border-radius:3px;border-left:3px solid var(--green);display:flex;flex-direction:column}
+.quote blockquote{margin:0 0 18px}
+.quote blockquote p{margin:0;font-size:16px;color:var(--title)}
+.quote figcaption{margin-top:auto;font-size:13px;line-height:1.5}
+.quote figcaption strong{display:block;font-family:var(--font-title);font-weight:600;color:var(--title);text-transform:uppercase;letter-spacing:.4px}
+.quote figcaption span{color:var(--text)}
+
+/* ---- contact cards ---- */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px}
+.contact-card{background:#fff;padding:28px;border-radius:3px;display:flex;flex-direction:column;align-items:flex-start}
+.contact-card h3{margin-bottom:.5em}
+.contact-card .addr{color:#4a6b5a;margin-bottom:18px}
+.contact-card .btn{margin-top:auto}
+
+/* ---- call to action ---- */
+.cta{background:var(--band)}
+.cta .wrap{padding-block:56px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+.cta-inner{display:flex;gap:15px;align-items:flex-start}
+.cta-icon{flex:0 0 auto;width:32px;height:32px;fill:var(--navy)}
+.cta p{font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:400;color:#000;margin:0}
+
+/* ---- buttons ---- */
+.btn{display:inline-block;font-family:var(--font-text);font-weight:700;font-size:13px;letter-spacing:.6px;text-transform:uppercase;color:#fff;text-decoration:none;padding:15px 32px;border-radius:3px;background:var(--navy);white-space:nowrap;transition:opacity .15s}
+.btn:hover,.btn:focus-visible{opacity:.85}
+.btn-green{background:var(--green)}
+.btn-sm{padding:11px 22px;font-size:12px}
+
+/* ---- footer ---- */
+.site-footer{background:var(--dark);color:#b6b6b6}
+.site-footer .wrap{padding-block:56px;display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:36px;align-items:stretch}
+.site-footer h2{color:var(--band);font-size:18px;margin-bottom:.8em}
+.site-footer p{font-size:15px}
+.contact-col{display:flex;flex-direction:column}
+.contact-col .btn{margin-top:auto;align-self:flex-start}
+.region{font-family:var(--font-title);font-weight:500;color:var(--band);font-size:13px;letter-spacing:.5px;margin:0 0 2px}
+.contact-card .region{color:var(--green)}
+.person{color:#fff;font-size:16px;margin:0 0 6px}
+.addr{display:block;font-size:13px;overflow-wrap:break-word;color:#9fb3a7;text-decoration:none;margin:0 0 14px;line-height:1.5}
+.addr:hover,.addr:focus-visible{color:#fff;text-decoration:underline}
+.contact-card .addr:hover,.contact-card .addr:focus-visible{color:var(--navy)}
+.colophon{background:#1b1b1b;color:#8d8d8d;font-size:13px}
+.colophon .wrap{padding-block:20px;text-align:center}
+
+@media (max-width:900px){
+  .intro .wrap{grid-template-columns:1fr;gap:32px;padding-block:44px}
+  .cta .wrap{grid-template-columns:1fr;gap:28px}
+  .site-footer .wrap{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media (max-width:600px){
+  .site-header .wrap{justify-content:center;min-height:0;padding-block:18px}
+  .nav ul{justify-content:center;gap:18px}
+  .logo img{width:210px}
+  .cta p{font-size:19px}
+  .site-footer .wrap{grid-template-columns:1fr}
+  .prose .wrap,.band-pale .wrap{padding-block:40px}
+}

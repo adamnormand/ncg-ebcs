@@ -1,110 +1,90 @@
 # ncg-ebcs
 
 Static site for **Evidence Based Consulting Solutions** (`evidencebasedsolutions.ca`),
-migrating off Kinsta-hosted WordPress to GitHub Pages. No build step, no dependencies.
+migrated off Kinsta-hosted WordPress (multisite subsite 9) to GitHub Pages.
+No build step, no JavaScript, no dependencies.
 
 ## Status
 
 | Step | State |
 |---|---|
-| Destination repo created | Done |
+| Five main pages rebuilt | **Done** — Home, Services, About, Clients, Contact |
+| Content, media and styling extracted | Done |
+| Contact form replaced with `mailto:` | Done |
+| 404, robots.txt, sitemap.xml | Done |
 | DNS cutover runbook | Done — [`DNS.md`](DNS.md) |
-| Extraction tooling | Done — [`tools/extract.sh`](tools/extract.sh) |
-| Source content + media extracted | Homepage only — export was incomplete |
-| Static pages built | Home done. Services / About / Clients / Contact **blocked** |
-| Contact form | Decided — replaced by `mailto:` / `tel:` details, no form |
+| Team profile pages (5) and `/news/` | Not migrated — see below |
+| GitHub Pages enabled | Not started |
 | DNS switched | Not started (must be last) |
 
-## The export was incomplete — 1 page of 11
-
-The Simply Static ZIP contained only `index.html`, but `page-sitemap.xml` in that
-same export lists eleven URLs:
+## Files
 
 ```
-/                       /services/          /clients/           /contact/
-/about/                 /news/              /about/about-us/    /about/about-us-2/
-/about/about-us-3/      /about/about-us-4/  /about/elementor-367/
-```
-
-The homepage is rebuilt and faithful. The four other pages in the primary nav —
-Services, About, Clients, Contact — have no source HTML, so they are not built and
-their nav links currently 404.
-
-**A second Simply Static run produced a byte-identical ZIP** — same MD5 on `index.html`,
-same 1,748 files. So this is not a job that stopped early; the crawler completes the
-homepage and all of its assets, then never queues the other URLs. The nav links are
-present and root-relative (`/services/` etc.), so they are discoverable.
-
-Things that fix it, cheapest first:
-
-1. **Browser save (reliable, ~2 min).** Open each of `/services/`, `/about/`, `/clients/`
-   and `/contact/` and use *Save Page As → Webpage, Complete*. The design system is
-   already extracted from the homepage, so only these pages' content and images are
-   still needed.
-2. **Simply Static → Settings → Include/Exclude → Additional URLs**: add the four paths
-   explicitly, one per line, then re-run.
-3. **Simply Static → Diagnostics**: check for failures (WP-Cron disabled, memory limit,
-   file permissions). On a multisite subsite, WP-Cron problems are the usual cause of a
-   crawl queue that never advances.
-
-Of the eleven, five matter: `/`, `/services/`, `/about/`, `/clients/`, `/contact/`.
-The `about-us-N` and `elementor-367` entries are Elementor draft/revision artifacts —
-confirm before publishing, but they are almost certainly not linked from anywhere.
-
-## Decisions
-
-**The contact form is dropped, not replaced.** The WordPress form plugin cannot work on
-static hosting — there is no server to receive the POST. Rather than swapping it for a
-hosted form service, the contact page publishes the details directly and lets people mail
-from their own client:
-
-```html
-<a href="mailto:ADDRESS@evidencebasedsolutions.ca?subject=Website%20enquiry">ADDRESS@evidencebasedsolutions.ca</a>
-<a href="tel:+1NPANXXXXXX">(NPA) NXX-XXXX</a>
-```
-
-Three rules this follows, all of which matter more than they look:
-
-1. **The visible text is the address itself**, never "Email us". A `mailto:` link opens
-   nothing for someone on webmail with no mail client configured — which is most people
-   on a work desktop. If the address is only in the `href`, they hit a dead link. Shown
-   as text, they copy it and carry on.
-2. **`tel:` carries E.164 in the `href`** (`+14185551234`) and human formatting in the
-   text. Dialers need the former; readers need the latter.
-3. **A `?subject=` prefill** on the mail link, so enquiries from the site are
-   identifiable at a glance in the inbox — cheap triage, no tracking.
-
-Left plain rather than obfuscated. JavaScript address-scrambling breaks copy-paste and
-screen readers to defeat scrapers that stopped being the binding constraint once server
--side spam filtering got good. Not worth the accessibility cost on a three-page site.
-
-Exact addresses and numbers come from the extraction — `contact-details.txt` — and are
-transcribed verbatim. A retyped address is a silently dead contact channel, the same
-failure mode the form had.
-
-## Intended structure
-
-```
-index.html           Home
-about/index.html     About
-contact/index.html   Contact
-assets/              Images, fonts, downloads
-tools/extract.sh     One-shot extractor for the live WordPress site
-CNAME                Custom domain (add at cutover, not before)
-.nojekyll            Disables Jekyll processing on GitHub Pages
+index.html            Home
+services/index.html   Services
+about/index.html      About
+clients/index.html    Clients
+contact/index.html    Contact
+404.html              Not-found page (GitHub Pages serves this automatically)
+assets/site.css       All styling, shared by every page
+assets/               Logo, banners, hero, team portraits
+robots.txt            Points crawlers at the sitemap
+sitemap.xml           The five live URLs
+favicon.svg           The old site had none
+.nojekyll             Disables Jekyll processing
+CNAME                 Custom domain — add at cutover, not before
 ```
 
 Directory-style paths (`about/index.html`, not `about.html`) so URLs match the existing
-WordPress permalinks exactly and inbound links keep resolving.
+WordPress permalinks and inbound links keep resolving. All links are document-relative,
+so the site works from `file://`, from the `github.io` preview URL, and from the custom
+domain without changes.
+
+## Design system
+
+Taken from the live site, not invented.
+
+| Token | Value | Used for |
+|---|---|---|
+| `--navy` | `#081C31` | Primary buttons, icon, service card rule |
+| `--green` | `#317D52` | Contact actions |
+| `--band` | `#D1D1D1` | Pale section background, footer headings |
+| `--dark` | `#252525` | Footer |
+| `--text` | `#777777` | Body copy |
+| `--title` | `#242424` | Headings |
+
+Type is Lato 400/700 and Poppins 400/500/600, matching the theme's own Google Fonts
+request. Elementor's global colour variables and its Roboto / Roboto Slab downloads were
+untouched defaults the theme never used, and are not carried over.
+
+## Still to migrate
+
+**Five team profile pages**, linked from the About page's *View Profile* buttons:
+`/about/elementor-367/`, `/about/about-us/`, `/about/about-us-2/`, `/about/about-us-3/`,
+`/about/about-us-4/`. Those buttons currently 404. Capture them the same way the main
+pages were captured (browser *Save Page As → Webpage, Complete*).
+
+**`/news/`** appears in the WordPress sitemap but nothing on the site links to it.
+Confirm whether it should survive the migration at all.
+
+## Known defects on the live site, carried or corrected
+
+| Issue | Where | Handling |
+|---|---|---|
+| Two team members link to the same profile (`about-us-3`), leaving `about-us-4` orphaned | About | **Reproduced as-is.** One of Dr. Mullen / Dr. Teed points at the wrong profile. Needs a human decision. |
+| `MENTAL HEARTH TRAINING FOR LEADERS` | Services | **Corrected** to *Health*. |
+| "Learn more about each of the consulting team with specific the specific profiles provided." | About | **Corrected** — the duplicated words removed. |
+| `Suject` | Contact form | Moot; the form is gone. |
+| Page says "email or call us" but no phone number is published anywhere | Contact | **Flagged.** Add a number or drop "or call". |
+| Six `<h1>` elements on one page | Services | **Corrected** — one `<h1>` per page, services demoted to `<h2>`. |
+| `lang="fr-CA"` on English copy | All | **Corrected** to `en-CA`. |
 
 ## Deploy on GitHub Pages
 
-1. Push to the root of `main`.
+1. Merge to `main` and push.
 2. Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)`.
-3. Settings → Pages → Custom domain: `evidencebasedsolutions.ca`, then *Enforce HTTPS*.
+3. Verify at `https://adamnormand.github.io/ncg-ebcs/`.
+4. Only then: add `CNAME`, set the custom domain, tick *Enforce HTTPS*.
 
-Do steps 2–3 **after** the real content is in place. Pointing the live domain at an empty
-repo takes the firm's site down for as long as it takes someone to notice.
-
-Full cutover procedure, including what to delete at Squarespace and when to decommission
+Full cutover procedure, including what to change at Squarespace and when to decommission
 Kinsta: [`DNS.md`](DNS.md).
