@@ -30,10 +30,22 @@ The homepage is rebuilt and faithful. The four other pages in the primary nav �
 Services, About, Clients, Contact — have no source HTML, so they are not built and
 their nav links currently 404.
 
-**To finish:** re-run Simply Static and let the job reach *Done* before downloading.
-Check **Simply Static → Activity Log** shows all eleven URLs crawled, not one. If it
-still stops at the homepage, add the four page URLs under
-**Settings → Include/Exclude → Additional URLs** and re-run.
+**A second Simply Static run produced a byte-identical ZIP** — same MD5 on `index.html`,
+same 1,748 files. So this is not a job that stopped early; the crawler completes the
+homepage and all of its assets, then never queues the other URLs. The nav links are
+present and root-relative (`/services/` etc.), so they are discoverable.
+
+Things that fix it, cheapest first:
+
+1. **Browser save (reliable, ~2 min).** Open each of `/services/`, `/about/`, `/clients/`
+   and `/contact/` and use *Save Page As → Webpage, Complete*. The design system is
+   already extracted from the homepage, so only these pages' content and images are
+   still needed.
+2. **Simply Static → Settings → Include/Exclude → Additional URLs**: add the four paths
+   explicitly, one per line, then re-run.
+3. **Simply Static → Diagnostics**: check for failures (WP-Cron disabled, memory limit,
+   file permissions). On a multisite subsite, WP-Cron problems are the usual cause of a
+   crawl queue that never advances.
 
 Of the eleven, five matter: `/`, `/services/`, `/about/`, `/clients/`, `/contact/`.
 The `about-us-N` and `elementor-367` entries are Elementor draft/revision artifacts —
